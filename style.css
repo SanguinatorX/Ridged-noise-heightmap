@@ -1,0 +1,11 @@
+/* Remove default browser margins so the canvas fills the entire window */
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Prevent the canvas from adding extra whitespace below it
+   (by default, <canvas> is inline and sits on the text baseline) */
+canvas {
+  display: block;
+}
