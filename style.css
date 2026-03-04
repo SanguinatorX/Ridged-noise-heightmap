@@ -9,3 +9,10 @@ html, body {
 canvas {
   display: block;
 }
+
+header {
+  text-align: center;
+  border: solid 1px black;
+  padding: 2px;
+  margin: 4px;
+}
