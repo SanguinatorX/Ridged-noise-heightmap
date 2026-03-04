@@ -1,18 +1,87 @@
-/* Remove default browser margins so the canvas fills the entire window */
+/* Animation clignotante néon visible */
+@keyframes neon-flicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% {
+    text-shadow:
+      0 0 20px #00ff00,
+      0 0 40px #00ff00,
+      0 0 60px #00ff44,
+      0 0 80px #00ff44;
+  }
+  20%, 24%, 55% {
+    text-shadow:
+      0 0 2px #00ff00,
+      0 0 4px #00ff22,
+      0 0 10px #00ff33,
+      0 0 20px #00ff44;
+  }
+}
+
+/* Hover sur le titre */
+header h1:hover {
+  animation: neon-flicker 0.3s infinite alternate;
+  color: #00ff00;
+}
+
+/* Reset */
 html, body {
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
 }
 
-/* Prevent the canvas from adding extra whitespace below it
-   (by default, <canvas> is inline and sits on the text baseline) */
-canvas {
-  display: block;
+/* Fond cyber vert */
+body {
+  font-family: 'Fira Code', monospace;
+  background: radial-gradient(circle at 20% 20%, #00ff0022, transparent 40%),
+              radial-gradient(circle at 80% 80%, #00ff8822, transparent 40%),
+              linear-gradient(135deg, #001a00, #002b0f, #003d14);
+  color: #d4ffd4;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
+/* Header glass vert */
 header {
   text-align: center;
-  border: solid 1px black;
-  padding: 2px;
-  margin: 4px;
+  padding: 15px;
+  margin: 15px auto;
+  width: 90%;
+  max-width: 800px;
+
+  background: rgba(0, 255, 0, 0.08);
+  backdrop-filter: blur(12px);
+  border-radius: 15px;
+  border: 1px solid rgba(0, 255, 0, 0.4);
+
+  box-shadow: 0 0 25px #00ff00aa;
+}
+
+/* Titre néon vert */
+header h1 {
+  font-size: 2.2rem;
+  margin-bottom: 8px;
+  color: #00ff00;
+  text-shadow:
+    0 0 5px #00ff00,
+    0 0 15px #00ff00,
+    0 0 30px #00ff88;
+}
+
+/* Sous-texte */
+header p {
+  font-size: 0.95rem;
+  opacity: 0.85;
+  color: #aaffaa;
+}
+
+/* Canvas */
+canvas {
+  display: block;
+  border-radius: 6px;
+}
+
+footer {
+  text-align: center;
 }
