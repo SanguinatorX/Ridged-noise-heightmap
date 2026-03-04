@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <!-- p5.js for web editor compatibility (not used by this sketch) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/p5.js"></script>
+    <script>function setup() { noCanvas(); }</script>
+
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.170.0/build/three.webgpu.js",
+        "three/webgpu": "https://unpkg.com/three@0.170.0/build/three.webgpu.js",
+        "three/tsl": "https://unpkg.com/three@0.170.0/build/three.webgpu.js",
+        "three/addons/": "https://unpkg.com/three@0.170.0/examples/jsm/"
+      }
+    }
+    </script>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script type="module" src="noise.js"></script>
+    <script type="module" src="sketch.js"></script>
+  </body>
+</html>
