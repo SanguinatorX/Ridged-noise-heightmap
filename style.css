@@ -93,8 +93,7 @@ footer:hover {
 .camera-view {
   position: relative;
   margin: auto;
-  width: 80%;
-  max-width: 900px;
+  width: 96%;
   aspect-ratio: 16/9;
   border: 6px solid #00ff00;
   border-radius: 12px;
@@ -130,7 +129,7 @@ footer:hover {
   position: absolute;
   bottom: 10px;
   left: 15px;
-  color: #00ff00;
+  color: darkgreen;
   font-size: 0.8rem;
   text-shadow: 0 0 6px #00ff00;
   pointer-events: none;
