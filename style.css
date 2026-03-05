@@ -1,13 +1,30 @@
-/* Animation clignotante néon visible */
+/* Police et reset */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  font-family: 'Fira Code', monospace;
+  color: #d4ffd4;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background:
+    radial-gradient(circle at 20% 20%, #00ff0022, transparent 40%),
+    radial-gradient(circle at 80% 80%, #00ff8822, transparent 40%),
+    linear-gradient(135deg,#001a00,#002b0f,#003d14);
+}
+
+/* Animation néon pour header */
 @keyframes neon-flicker {
-  0%, 18%, 22%, 25%, 53%, 57%, 100% {
+  0%,18%,22%,25%,53%,57%,100% {
     text-shadow:
       0 0 20px #00ff00,
       0 0 40px #00ff00,
       0 0 60px #00ff44,
       0 0 80px #00ff44;
   }
-  20%, 24%, 55% {
+  20%,24%,55% {
     text-shadow:
       0 0 2px #00ff00,
       0 0 4px #00ff22,
@@ -16,49 +33,20 @@
   }
 }
 
-/* Hover sur le titre */
-header h1:hover {
-  animation: neon-flicker 0.3s infinite alternate;
-  color: #00ff00;
-}
-
-/* Reset */
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
-
-/* Fond cyber vert */
-body {
-  font-family: 'Fira Code', monospace;
-  background: radial-gradient(circle at 20% 20%, #00ff0022, transparent 40%),
-              radial-gradient(circle at 80% 80%, #00ff8822, transparent 40%),
-              linear-gradient(135deg, #001a00, #002b0f, #003d14);
-  color: #d4ffd4;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-/* Header glass vert */
+/* Header */
 header {
   text-align: center;
   padding: 15px;
   margin: 15px auto;
   width: 90%;
   max-width: 800px;
-
-  background: rgba(0, 255, 0, 0.08);
+  background: rgba(0,255,0,0.08);
   backdrop-filter: blur(12px);
   border-radius: 15px;
-  border: 1px solid rgba(0, 255, 0, 0.4);
-
+  border: 1px solid rgba(0,255,0,0.4);
   box-shadow: 0 0 25px #00ff00aa;
 }
 
-/* Titre néon vert */
 header h1 {
   font-size: 2.2rem;
   margin-bottom: 8px;
@@ -69,46 +57,109 @@ header h1 {
     0 0 30px #00ff88;
 }
 
-/* Sous-texte */
+header h1:hover {
+  animation: neon-flicker 0.3s infinite alternate;
+}
+
 header p {
   font-size: 0.95rem;
   opacity: 0.85;
   color: #aaffaa;
 }
 
-/* Canvas */
-canvas {
-  display: block;
-  border-radius: 6px;
-}
-
-/* Footer néon vert */
+/* FOOTER */
 footer {
   text-align: center;
   padding: 10px 0;
   margin: 0 auto;
   width: 100%;
-  
-  background: rgba(0, 255, 0, 0.05);
+  background: rgba(0,255,0,0.05);
   backdrop-filter: blur(8px);
-  border-top: 1px solid rgba(0, 255, 0, 0.3);
-  box-shadow: 0 -0 15px #00ff00aa;
-
+  border-top: 1px solid rgba(0,255,0,0.3);
+  box-shadow: 0 0 15px #00ff00aa;
   color: #aaffaa;
   font-size: 0.9rem;
-  text-shadow:
-    0 0 3px #00ff00,
-    0 0 6px #00ff44;
-  
+  text-shadow: 0 0 3px #00ff00, 0 0 6px #00ff44;
   transition: all 0.3s ease;
 }
 
-/* Clignotement au hover */
 footer:hover {
   box-shadow: 0 0 25px #00ff00cc;
-  text-shadow:
-    0 0 6px #00ff00,
-    0 0 12px #00ff44,
-    0 0 20px #00ff88;
+  text-shadow: 0 0 6px #00ff00, 0 0 12px #00ff44, 0 0 20px #00ff88;
   color: #d4ffd4;
+}
+
+/* CAMERA VIEW */
+.camera-view {
+  position: relative;
+  margin: auto;
+  width: 80%;
+  max-width: 900px;
+  aspect-ratio: 16/9;
+  border: 6px solid #00ff00;
+  border-radius: 12px;
+  box-shadow: 0 0 20px #00ff00, inset 0 0 40px #000;
+  overflow: hidden;
+}
+
+/* Canvas plein écran */
+.camera-view canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  transition: filter 0.3s ease;
+}
+
+/* Grain caméra */
+.camera-view::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0,0,0,0.02),
+    rgba(0,0,0,0.02) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+}
+
+/* HUD et infos */
+.camera-info {
+  position: absolute;
+  bottom: 10px;
+  left: 15px;
+  color: #00ff00;
+  font-size: 0.8rem;
+  text-shadow: 0 0 6px #00ff00;
+  pointer-events: none;
+}
+
+/* REC clignotant */
+.rec {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 0.9rem;
+  color: #ff0000;
+  text-shadow: 0 0 8px #ff0000;
+  animation: rec-blink 1s infinite;
+}
+
+@keyframes rec-blink {
+  0%,50%,100% { color:#ff0000; text-shadow:0 0 8px #ff0000; }
+  25%,75% { color:#880000; text-shadow:0 0 2px #ff5555; }
+}
+
+/* Viseur central */
+.camera-view::before {
+  content: "+";
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  color: #00ff00;
+  text-shadow: 0 0 10px #00ff00;
+  pointer-events: none;
 }
