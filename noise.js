@@ -17,7 +17,8 @@ https://threejsroadmap.com/blog/10-noise-functions-for-threejs-tsl-shaders
 import {
   Fn, float, vec3,
   floor, fract, sin, cos, dot, mix,
-  abs, oneMinus, Loop
+  abs, oneMinus, Loop,
+  length, min
 } from 'three/tsl';
 
 
@@ -123,9 +124,48 @@ function createRidgedNoise( { octaves = 6, lacunarity = 2.0, gain = 0.5 } = {} )
 }
 
 
+// ─── Worley (Voronoi) Noise 3D ───────────────────────────────
+
+
+const hash33 = Fn( ( [ p ] ) => {
+
+  const px = fract( sin( dot( p, vec3( 127.1, 311.7, 74.7 ) ) ).mul( 43758.5453 ) );
+  const py = fract( sin( dot( p, vec3( 269.5, 183.3, 246.1 ) ) ).mul( 43758.5453 ) );
+  const pz = fract( sin( dot( p, vec3( 419.2, 371.9, 128.5 ) ) ).mul( 43758.5453 ) );
+  return vec3( px, py, pz );
+
+} );
+
+
+const worleyNoise3D = Fn( ( [ p ] ) => {
+
+  const i = floor( p ).toVar();
+  const f = fract( p ).toVar();
+
+  const minDist = float( 1.0 ).toVar();
+
+  Loop( { start: -1, end: 2, type: 'int' }, ( { i: x } ) => {
+    Loop( { start: -1, end: 2, type: 'int' }, ( { i: y } ) => {
+      Loop( { start: -1, end: 2, type: 'int' }, ( { i: z } ) => {
+
+        const neighbor = vec3( float( x ), float( y ), float( z ) );
+        const point = hash33( i.add( neighbor ) );
+        const diff = neighbor.add( point ).sub( f );
+        const dist = length( diff );
+        minDist.assign( min( minDist, dist ) );
+
+      } );
+    } );
+  } );
+
+  return minDist;
+
+} );
+
+
 // ─── Expose to sketch.js ─────────────────────────────────────
 // (p5.js web editor doesn't support relative ES module imports,
 //  so we bridge via window instead)
 
 
-window.NoiseLib = { createFBM, createRidgedNoise };
+window.NoiseLib = { createFBM, createRidgedNoise, worleyNoise3D };
