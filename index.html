@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap" rel="stylesheet">
 
-<!-- p5.js pour compatibilité web editor -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/p5.js"></script>
 <script>function setup() { noCanvas(); }</script>
 
@@ -27,23 +26,65 @@
 <body>
 
 <header>
-  <h1>Magic 3D world</h1>
-  <p>Projet réalisé avec l'outil ThreeJS et motivé par Luka Piscorec</p>
+  <h1>Magic 3D World</h1>
+  <p>Real-time procedural 3D experiment powered by ThreeJS and motivated by Luka Piscorec</p>
 </header>
 
-<!-- Vue caméra avec HUD -->
 <div class="camera-view">
+
   <canvas id="canvas"></canvas>
-  <div class="camera-info">ISO 200 | F2.8 | 60FPS</div>
+
+  <!-- Overlay scan -->
+  <div class="scan-line"></div>
+
+  <!-- grille technique -->
+  <div class="hud-grid"></div>
+
+  <!-- Infos caméra -->
+  <div class="camera-info">
+    <span>ISO 200</span>
+    <span>F2.8</span>
+    <span id="fps">60FPS</span>
+    <span>WB 5600K</span>
+  </div>
+
+  <!-- panneau technique -->
+  <div class="tech-panel">
+    <div>CAM-01</div>
+    <div>BAT 92%</div>
+    <div>GPU RENDER</div>
+  </div>
+
   <div class="rec">REC ●</div>
+
 </div>
+
+<footer>
+  Thank you for exploring this experimental 3D world
+</footer>
 
 <script type="module" src="noise.js"></script>
 <script type="module" src="sketch.js"></script>
 
-<footer>
-  Nous vous remercions de votre intérêt pour notre projet !
-</footer>
+<script>
+let last = performance.now()
+let frames = 0
+
+function fpsLoop(){
+ frames++
+ let now = performance.now()
+
+ if(now - last > 1000){
+   document.getElementById("fps").textContent = frames + " FPS"
+   frames = 0
+   last = now
+ }
+
+ requestAnimationFrame(fpsLoop)
+}
+
+fpsLoop()
+</script>
 
 </body>
 </html>
