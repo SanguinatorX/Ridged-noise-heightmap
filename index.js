@@ -97,7 +97,7 @@ controls.update();
 
 // faut ajouter une lumière pour voir le relief
 const light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(5, 10, 5);
+light.position.set(2, 16, 3);
 scene.add(light);
 
 
@@ -272,8 +272,8 @@ const wall = new THREE.Mesh(wallGeometry, wallMaterial);
 wall.position.set(0, 0, -15);
 wall.rotation.y = 0;
 scene.add(wall);
-wallMaterial.color = new THREE.Color(0.4, 0.7, 1); // vrai bleu clair
-
+wallMaterial.color = new THREE.Color(0 , 8, 3); // vrai bleu clair
+3
 
 
 // ─── Cervelle ────────────────────────────────────────
@@ -307,7 +307,17 @@ scene.add( mesh_blob );
 
 
 
+// ─── Deuxième cervelle ─────────────────────────────────
 
+// clone de la première cervelle
+const mesh_blob2 = mesh_blob.clone();
+scene.add(mesh_blob2);
+
+// compteur et direction inversée
+let cervelle2CountX = 0;
+let cervelle2CountY = 0;
+let cervelle2DirectionX = -0.07;
+let cervelle2DirectionY = -0.04;
 
 
 
@@ -353,11 +363,23 @@ setInterval(() => {
   cervelleCountX += cervelleDirectionX;
   cervelleCountY += cervelleDirectionY;
 
-  if (cervelleCountX > 8 || cervelleCountX < -8) cervelleDirectionX *= -1;
+  if (cervelleCountX > 7 || cervelleCountX < -7) cervelleDirectionX *= -1;
   if (cervelleCountY > 5 || cervelleCountY < -5) cervelleDirectionY *= -1;
 
   mesh_blob.position.x = cervelleCountX;
   mesh_blob.position.y = cervelleCountY;
+  
+    // mouvement blob2
+  cervelle2CountX += cervelle2DirectionX;
+  cervelle2CountY += cervelle2DirectionY;
+
+  if (cervelle2CountX > 7 || cervelle2CountX < -7) cervelle2DirectionX *= -1;
+  if (cervelle2CountY > 5 || cervelle2CountY < -5) cervelle2DirectionY *= -1;
+
+  mesh_blob2.position.x = cervelle2CountX;
+  mesh_blob2.position.y = cervelle2CountY;
+
+  // le reste pour les cubes reste inchangé
 
   // mouvement cubes
   cubeMouvCount += cubeDirection;
