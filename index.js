@@ -72,7 +72,7 @@ const perlinNoise3D = Fn( ( [ p ] ) => {
 
 
 
-// ─── Renderer & Scene ─────────────────────────────────────────
+// ─── Renderer & Scene ──────────────────────────────────
 
 const renderer = new THREE.WebGPURenderer( {
   canvas: document.querySelector( '#canvas' ),
@@ -120,12 +120,12 @@ const configNoise = {
 
 const cubeMelee = {
   // number of boxes to scatter in the scene
-  boxCount : 100,
+  boxCount : 150,
 
   // size of each cube
-  boxSizeX : 0.8,
-  boxSizeZ : 0.8,
-  boxSizeY : 0.8,
+  boxSizeX : 0.6,
+  boxSizeZ : 0.6,
+  boxSizeY : 0.6,
 
   // boxes are placed randomly within a cube of this side length
   spreadX : 25,
@@ -307,6 +307,10 @@ scene.add( mesh_blob );
 
 
 
+
+
+
+
 // ─── Animation Loop ───────────────────────────────────────────
 
 let time = Date.now();
@@ -335,9 +339,9 @@ let cervelleCountX = 0;
 let cervelleCountY = 0;
 let cubeMouvCount = 0;
 
-let cervelleDirectionX = 0.1;
-let cervelleDirectionY = 0.1;
-let cubeDirection = 0.1;
+let cervelleDirectionX = 0.07;
+let cervelleDirectionY = 0.04;
+let cubeDirection = 0.05;
 
 // sauvegarde positions de base des cubes
 for (const cube of cubesMeshes) {
