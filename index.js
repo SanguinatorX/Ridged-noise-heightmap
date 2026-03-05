@@ -102,7 +102,7 @@ scene.add(light);
 
 
 
-// ─── Noise Displacement ───────────────────────────────────────
+// ─── Informations ─────────────────────────────────────────
 
 const configNoise = {
   noiseType : "ridged",
@@ -117,6 +117,28 @@ const configNoise = {
   travelDirection : [ 0, 2, 1 ],
   travelSpeed     : 2.0,
 };
+
+const cubeMelee = {
+  // number of boxes to scatter in the scene
+  boxCount : 100,
+
+  // size of each cube
+  boxSizeX : 0.8,
+  boxSizeZ : 0.8,
+  boxSizeY : 0.8,
+
+  // boxes are placed randomly within a cube of this side length
+  spreadX : 25,
+  spreadY : 40,
+  spreadZ : 15,
+
+// rotation speed in radians per millisecond
+  rotationSpeed : 0.005,
+}
+
+
+
+// ─── Noise Displacement ───────────────────────────────────────
 
 // paramètres pour le noise builder
 const noiseParams = {
@@ -156,15 +178,37 @@ const displacedPosition = Fn( () => {
 } )();
 
 
-// ─── Geometry & Material ──────────────────────────────────────
+
+// ─── Cubes ──────────────────────────────────────
+
+const cube = new THREE.BoxGeometry( cubeMelee.boxSizeX, cubeMelee.boxSizeZ, cubeMelee.boxSizeY );
+const cubeMaterial = new THREE.MeshNormalMaterial( { flatShading: true } );
+
+// create all meshes, assign random positions, and add to scene
+const cubesMeshes = [];
+
+for ( let i = 0; i < cubeMelee.boxCount; i++ ) {
+
+  const cubeMesh = new THREE.Mesh( cube, cubeMaterial );
+  cubeMesh.position.set(
+    ( Math.random() - 0.5 ) * cubeMelee.spreadX,
+    ( Math.random() - 0.5 ) * cubeMelee.spreadZ,
+    ( Math.random() - 0.5 ) * cubeMelee.spreadY,
+  );
+  scene.add( cubeMesh );
+  cubesMeshes.push( cubeMesh );
+}
 
 
-const geometry = new THREE.PlaneGeometry( 50, 32, 200, 200 );
 
-const material = new THREE.MeshNormalMaterial( { flatShading: true, side: THREE.DoubleSide } );
-material.positionNode = displacedPosition;
+// ─── Couche standart ──────────────────────────────────────
 
-const mesh = new THREE.Mesh( geometry, material );
+const couche1 = new THREE.PlaneGeometry( 50, 32, 200, 200 );
+
+const couche1Material = new THREE.MeshNormalMaterial( { flatShading: true, side: THREE.DoubleSide } );
+couche1Material.positionNode = displacedPosition;
+
+const mesh = new THREE.Mesh( couche1, couche1Material );
 mesh.rotation.x = Math.PI /2;
 mesh.position.y = -5;
 scene.add( mesh );
@@ -178,26 +222,26 @@ const displacedPositionInverted = Fn( () => {
   const pos = positionLocal.toVar();
   const nrm = normalLocal.toVar();
 
-  const noiseInput = pos.mul( NOISE_SCALE ).add( travelDir.mul( uTime ) );
-  const noiseVal   = noiseFn( noiseInput ).sub( 0.5 ).mul( DISPLACEMENT_STRENGTH );
+  const noiseInput = pos.mul( configNoise.noiseScale ).add( travelDir.mul( uTime ) );
+  const noiseVal   = noiseFn( noiseInput ).sub( 0.5 ).mul( configNoise.displacementStreght );
 
   // on pousse dans le sens opposé
   return pos.sub( nrm.mul( noiseVal ) );
 
 } )();
 
-const materialTop = new THREE.MeshNormalMaterial({
+const materialDown = new THREE.MeshNormalMaterial({
   flatShading: true,
   side: THREE.DoubleSide
 });
 
-materialTop.positionNode = displacedPositionInverted;
+materialDown.positionNode = displacedPositionInverted;
 
-const meshTop = new THREE.Mesh( geometry.clone(), materialTop );
-meshTop.rotation.x = -Math.PI / 2;
-meshTop.position.y = 5.3; // hauteur au-dessus du premier
+const meshDown = new THREE.Mesh( couche1.clone(), materialDown );
+meshDown.rotation.x = -Math.PI / 2;
+meshDown.position.y = 5.3; // hauteur au-dessus du premier
 
-scene.add( meshTop );
+scene.add( meshDown );
 
 
 
@@ -253,7 +297,7 @@ const displacedPositionBlob = Fn( () => {
 } )();
 
 
-const geometry_blob = new THREE.IcosahedronGeometry( 1.5, 30 );
+const geometry_blob = new THREE.IcosahedronGeometry( 1.4, 30 );
 
 const material_blob = new THREE.MeshNormalMaterial( { flatShading: true } );
 material_blob.positionNode = displacedPositionBlob;
@@ -267,36 +311,56 @@ scene.add( mesh_blob );
 
 let time = Date.now();
 
-renderer.setAnimationLoop( () => {
+renderer.setAnimationLoop(() => {
 
   const currentTime = Date.now();
-  const deltaTime   = currentTime - time;
+  const deltaTime = currentTime - time;
   time = currentTime;
 
+  // animation du bruit pour le terrain
   uTime.value += deltaTime * 0.001 * configNoise.travelSpeed;
 
-  renderer.render( scene, camera );
+  // rotation des cubes
+  for (const cube of cubesMeshes) {
+    cube.rotateY(cubeMelee.rotationSpeed * deltaTime);
+  }
 
+  renderer.render(scene, camera);
 });
 
-let countX = 0;
-let countY = 0;
-let directionX = 0.1;
-let directionY = 0.1;
+
+// ─── Mouvement blob et cubes ─────────────────────────────────
+
+let cervelleCountX = 0;
+let cervelleCountY = 0;
+let cubeMouvCount = 0;
+
+let cervelleDirectionX = 0.1;
+let cervelleDirectionY = 0.1;
+let cubeDirection = 0.1;
+
+// sauvegarde positions de base des cubes
+for (const cube of cubesMeshes) {
+  cube.userData.baseX = cube.position.x;
+}
 
 setInterval(() => {
+  // mouvement blob
+  cervelleCountX += cervelleDirectionX;
+  cervelleCountY += cervelleDirectionY;
 
-  countX += directionX;
-  countY += directionY;
+  if (cervelleCountX > 8 || cervelleCountX < -8) cervelleDirectionX *= -1;
+  if (cervelleCountY > 5 || cervelleCountY < -5) cervelleDirectionY *= -1;
 
-  if (countX > 8 || countX < -8) {
-    directionX *= -1; // juste inverser
+  mesh_blob.position.x = cervelleCountX;
+  mesh_blob.position.y = cervelleCountY;
+
+  // mouvement cubes
+  cubeMouvCount += cubeDirection;
+  if (cubeMouvCount > 12 || cubeMouvCount < -12) cubeDirection *= -1;
+
+  for (const cube of cubesMeshes) {
+    cube.position.x = cube.userData.baseX + cubeMouvCount;
   }
-  if (countY > 5 || countY < -5) {
-    directionY *= -1; // juste inverser
-  }
-
-  mesh_blob.position.x = countX;
-  mesh_blob.position.y = countY;
 
 }, 10);
