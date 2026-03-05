@@ -120,16 +120,16 @@ const configNoise = {
 
 const cubeMelee = {
   // number of boxes to scatter in the scene
-  boxCount : 150,
+  boxCount : 160,
 
   // size of each cube
-  boxSizeX : 0.6,
-  boxSizeY : 0.6,
-  boxSizeZ : 0.6,
+  boxSizeX : 0.5,
+  boxSizeY : 0.5,
+  boxSizeZ : 0.5,
 
   // boxes are placed randomly within a cube of this side length
   spreadX : 25,
-  spreadY : 25,
+  spreadY : 15,
   spreadZ : 12,
 
 // rotation speed in radians per millisecond
@@ -196,7 +196,7 @@ const displacedCubePosition = Fn( () => {
 
 } )();
 
-const cube = new THREE.BoxGeometry( cubeMelee.boxSizeX, cubeMelee.boxSizeY, cubeMelee.boxSizeZ, 100, 100, 100 );
+const cube = new THREE.BoxGeometry( cubeMelee.boxSizeX, cubeMelee.boxSizeY, cubeMelee.boxSizeZ, 80, 80, 80 );
 const cubeMaterial = new THREE.MeshNormalMaterial( { flatShading: true } );
 cubeMaterial.positionNode = displacedCubePosition;
 
@@ -296,7 +296,7 @@ wallMaterial.color = new THREE.Color(0 , 8, 3); // vrai bleu clair
 
 //const uTime = uniform( 0.0 );
 const noiseScaleBlob = 2.0;
-const displacementStrengthBlob = 0.6;
+const displacementStrengthBlob = 0.8;
 
 const displacedPositionBlob = Fn( () => {
 
@@ -313,7 +313,7 @@ const displacedPositionBlob = Fn( () => {
 } )();
 
 
-const geometry_blob = new THREE.IcosahedronGeometry( 1.4, 30 );
+const geometry_blob = new THREE.IcosahedronGeometry( 1.6, 30 );
 
 const material_blob = new THREE.MeshNormalMaterial( { flatShading: true } );
 material_blob.positionNode = displacedPositionBlob;
@@ -380,7 +380,7 @@ setInterval(() => {
   cervelleCountY += cervelleDirectionY;
 
   if (cervelleCountX > 7 || cervelleCountX < -7) cervelleDirectionX *= -1;
-  if (cervelleCountY > 5 || cervelleCountY < -5) cervelleDirectionY *= -1;
+  if (cervelleCountY > 4.2 || cervelleCountY < -4.2) cervelleDirectionY *= -1;
 
   mesh_blob.position.x = cervelleCountX;
   mesh_blob.position.y = cervelleCountY;
@@ -390,7 +390,7 @@ setInterval(() => {
   cervelle2CountY += cervelle2DirectionY;
 
   if (cervelle2CountX > 7 || cervelle2CountX < -7) cervelle2DirectionX *= -1;
-  if (cervelle2CountY > 5 || cervelle2CountY < -5) cervelle2DirectionY *= -1;
+  if (cervelle2CountY > 4.2 || cervelle2CountY < -4.2) cervelle2DirectionY *= -1;
 
   mesh_blob2.position.x = cervelle2CountX;
   mesh_blob2.position.y = cervelle2CountY;
