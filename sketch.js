@@ -20,7 +20,7 @@ import * as THREE from 'three';
 import { Fn, uniform, float, vec3, positionLocal, normalLocal } from 'three/tsl';
 import { floor, fract, sin, cos, dot, mix } from 'three/tsl';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-const { createFBM, createRidgedNoise } = window.NoiseLib;
+const { createFBM, createRidgedNoise, worleyNoise3D } = window.NoiseLib;
 
 
 
@@ -124,13 +124,13 @@ const cubeMelee = {
 
   // size of each cube
   boxSizeX : 0.6,
-  boxSizeZ : 0.6,
   boxSizeY : 0.6,
+  boxSizeZ : 0.6,
 
   // boxes are placed randomly within a cube of this side length
   spreadX : 25,
-  spreadY : 40,
-  spreadZ : 15,
+  spreadY : 25,
+  spreadZ : 12,
 
 // rotation speed in radians per millisecond
   rotationSpeed : 0.005,
@@ -179,10 +179,26 @@ const displacedPosition = Fn( () => {
 
 
 
-// ─── Cubes ──────────────────────────────────────
+// ─── Cubes (Worley noise displacement) ───────────────────────
 
-const cube = new THREE.BoxGeometry( cubeMelee.boxSizeX, cubeMelee.boxSizeZ, cubeMelee.boxSizeY );
+const CUBE_NOISE_SCALE = 2.0;
+const CUBE_DISPLACEMENT_STRENGTH = 0.3;
+
+const displacedCubePosition = Fn( () => {
+
+  const pos = positionLocal.toVar();
+  const nrm = normalLocal.toVar();
+
+  const noiseInput = pos.mul( CUBE_NOISE_SCALE ).add( vec3( 0.0, 0.0, uTime ) );
+  const noiseVal = worleyNoise3D( noiseInput ).sub( 0.5 ).mul( CUBE_DISPLACEMENT_STRENGTH );
+
+  return pos.add( nrm.mul( noiseVal ) );
+
+} )();
+
+const cube = new THREE.BoxGeometry( cubeMelee.boxSizeX, cubeMelee.boxSizeY, cubeMelee.boxSizeZ, 100, 100, 100 );
 const cubeMaterial = new THREE.MeshNormalMaterial( { flatShading: true } );
+cubeMaterial.positionNode = displacedCubePosition;
 
 // create all meshes, assign random positions, and add to scene
 const cubesMeshes = [];
@@ -192,8 +208,8 @@ for ( let i = 0; i < cubeMelee.boxCount; i++ ) {
   const cubeMesh = new THREE.Mesh( cube, cubeMaterial );
   cubeMesh.position.set(
     ( Math.random() - 0.5 ) * cubeMelee.spreadX,
-    ( Math.random() - 0.5 ) * cubeMelee.spreadZ,
     ( Math.random() - 0.5 ) * cubeMelee.spreadY,
+    ( Math.random() - 0.5 ) * cubeMelee.spreadZ,
   );
   scene.add( cubeMesh );
   cubesMeshes.push( cubeMesh );
