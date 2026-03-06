@@ -1,90 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="utf-8" />
-<link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="style.css">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap" rel="stylesheet">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/p5.js"></script>
-<script>function setup() { noCanvas(); }</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/p5.js"></script>
+    <script>function setup() { noCanvas(); }</script>
 
-<script type="importmap">
-{
-  "imports": {
-    "three": "https://unpkg.com/three@0.170.0/build/three.webgpu.js",
-    "three/webgpu": "https://unpkg.com/three@0.170.0/build/three.webgpu.js",
-    "three/tsl": "https://unpkg.com/three@0.170.0/build/three.webgpu.js",
-    "three/addons/": "https://unpkg.com/three@0.170.0/examples/jsm/"
-  }
-}
-</script>
-</head>
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.170.0/build/three.webgpu.js",
+        "three/webgpu": "https://unpkg.com/three@0.170.0/build/three.webgpu.js",
+        "three/tsl": "https://unpkg.com/three@0.170.0/build/three.webgpu.js",
+        "three/addons/": "https://unpkg.com/three@0.170.0/examples/jsm/"
+      }
+    }
+    </script>
+  </head>
 
-<body>
+  <body>
 
-<header>
-  <h1>Magic 3D World</h1>
-  <p>Real-time procedural 3D experiment powered by ThreeJS and motivated by Luka Piscorec</p>
-</header>
+    <header>
+      <h1>Magic 3D World</h1>
+      <p>Real-time procedural 3D experiment powered by ThreeJS and motivated by Luka Piscorec</p>
+    </header>
+    
+    <section class="terminal-box">
+      <details class="terminal">
+        <summary class="terminal-header">SYSTEM LOG</summary>
+        <div class="terminal-content">
+          <h3>Scanning camera system...</h3>
+          <p> Booting procedural engine...</p>
+          <p> Initializing WebGPU renderer...</p>
+          <p> Loading terrain noise modules...</p>
+          <br />
+          <p> Memory allocation: 512MB OK</p>
+          <p> GPU detected: RTX / WebGPU compatible</p>
+          <br />
+          <p> Compiling shader pipeline...</p>
+          <p> Injecting terrain algorithm...</p>
+          <p> Establishing camera stream...</p>
+          <br />
+          <p> Matrix signal detected</p>
+          <p> System scan finished</p>
+        </div>
+      </details>
+    </section>
 
-<div class="camera-view">
+    <div class="camera-view">
+      <canvas id="canvas"></canvas>
+      <!-- Overlay scan -->
+      <div class="scan-line"></div>
+      <!-- grille technique -->
+      <div class="hud-grid"></div>
+      
+      <!-- Infos caméra -->
+      <div class="camera-info">
+        <span>ISO 200</span>
+        <span>F2.8</span>
+        <span id="fps">60FPS</span>
+        <span>WB 5600K</span>
+      </div>
 
-  <canvas id="canvas"></canvas>
+      <!-- panneau technique -->
+      <div class="tech-panel">
+        <div>CAM-01</div>
+        <div>BAT 92%</div>
+        <div>GPU RENDER</div>
+      </div>
 
-  <!-- Overlay scan -->
-  <div class="scan-line"></div>
+      <div class="rec">REC ●</div>
+    </div>
 
-  <!-- grille technique -->
-  <div class="hud-grid"></div>
+    <section class="project-info">
 
-  <!-- Infos caméra -->
-  <div class="camera-info">
-    <span>ISO 200</span>
-    <span>F2.8</span>
-    <span id="fps">60FPS</span>
-    <span>WB 5600K</span>
-  </div>
+      <h2>About this Experiment</h2>
 
-  <!-- panneau technique -->
-  <div class="tech-panel">
-    <div>CAM-01</div>
-    <div>BAT 92%</div>
-    <div>GPU RENDER</div>
-  </div>
+      <p>
+      This project explores procedural generation in real-time using
+      ThreeJS WebGPU and noise algorithms.
+      The terrain evolves dynamically and demonstrates how mathematics
+      can generate natural looking environments without any prebuilt assets.
+      </p>
+      <p>
+      Everything you see is generated live in the browser.
+      No models, no textures, just code and a lot of GPU power.
+      </p>
+    </section>
 
-  <div class="rec">REC ●</div>
+    <section class="tech-specs">
+      <h2>Technical Stack</h2>
+      <ul>
+        <li>ThreeJS WebGPU Renderer</li>
+        <li>Procedural Terrain Generation</li>
+        <li>Perlin / Simplex Noise</li>
+        <li>Real-time GPU Rendering</li>
+        <li>Custom Shader Experiments</li>
+      </ul>
+    </section>
 
-</div>
+    <footer>
+      Thank you for exploring this experimental 3D world, we hope we see you soon !
+    </footer>
 
-<footer>
-  Thank you for exploring this experimental 3D world
-</footer>
+    <script type="module" src="noise.js"></script>
+    <script type="module" src="sketch.js"></script>
 
-<script type="module" src="noise.js"></script>
-<script type="module" src="sketch.js"></script>
+    <script>
+    let last = performance.now()
+    let frames = 0
 
-<script>
-let last = performance.now()
-let frames = 0
+    function fpsLoop(){
+     frames++
+     let now = performance.now()
 
-function fpsLoop(){
- frames++
- let now = performance.now()
+     if(now - last > 1000){
+       document.getElementById("fps").textContent = frames + " FPS"
+       frames = 0
+       last = now
+     }
 
- if(now - last > 1000){
-   document.getElementById("fps").textContent = frames + " FPS"
-   frames = 0
-   last = now
- }
+     requestAnimationFrame(fpsLoop)
+    }
 
- requestAnimationFrame(fpsLoop)
-}
+    fpsLoop()
+    </script>
 
-fpsLoop()
-</script>
-
-</body>
+  </body>
 </html>
