@@ -127,7 +127,7 @@ header h1:hover{
  display:flex;
  gap:14px;
 
- font-size:0.9rem;
+ font-size: 1rem;
 
  padding:4px 8px;
 
@@ -148,7 +148,7 @@ header h1:hover{
  top:12px;
  left:15px;
 
- font-size:0.75rem;
+ font-size: 0.90rem;
  line-height:1.4;
 
  padding:6px 10px;
@@ -167,7 +167,7 @@ header h1:hover{
  top:10px;
  right:15px;
 
- font-size:0.95rem;
+ font-size: 1.2rem;
  color:#ff0000;
 
  text-shadow:
