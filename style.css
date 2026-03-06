@@ -1,3 +1,53 @@
+/* ANIMATIONS KEYFRAMES */
+
+@keyframes matrixGlow{
+  0%{ filter:brightness(1) }
+  50%{ filter:brightness(1.15) }
+  100%{ filter:brightness(1) }
+}
+
+@keyframes scan{
+  0%{ top:-10px }
+  100%{ top:100% }
+}
+
+@keyframes terminalOpen{
+  from{
+    opacity:0;
+    transform:translateY(-10px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+@keyframes terminalFlicker{
+  0%{opacity:1}
+  3%{opacity:.80}
+  6%{opacity:0.6}
+  9%{opacity:.90}
+  12%{opacity:1}
+}
+
+@keyframes cursorBlink{
+  0%,50%,100%{opacity:1}
+  25%,75%{opacity:0}
+}
+
+@keyframes typing{
+  from{width:0}
+  to{width:100%}
+}
+
+@keyframes recblink{
+  0%,50%,100%{opacity:1}
+  25%,75%{opacity:.3}
+}
+
+
+/* BODY */
+
 html, body {
   margin:0;
   padding:0;
@@ -14,6 +64,30 @@ html, body {
   radial-gradient(circle at 90% 80%,#00ff8822,transparent 50%),
   linear-gradient(135deg,#001a00,#002b0f,#003d14);
 }
+
+body::after{
+ content:"";
+ position:fixed;
+ inset:0;
+ pointer-events:none;
+
+ background:
+ repeating-linear-gradient(
+   to bottom,
+   rgba(0,255,0,0.05) 0px,
+   rgba(0,255,0,0.05) 1px,
+   transparent 2px,
+   transparent 4px
+ );
+
+ mix-blend-mode:overlay;
+ opacity:.35;
+}
+
+body{
+ animation: matrixGlow 6s infinite ease-in-out;
+}
+
 
 /* HEADER */
 
@@ -51,12 +125,130 @@ header h1:hover{
  transform:scale(1.02);
 }
 
+
+/* TERMINAL */
+
+.terminal summary{
+ list-style:none;
+ cursor:pointer;
+}
+
+.terminal summary::-webkit-details-marker{
+ display:none;
+}
+
+.terminal[open] .terminal-content{
+ animation:terminalOpen .4s ease;
+}
+
+.terminal-box{
+ width:80%;
+ margin:20px auto;
+
+ background:black;
+ border:1px solid #00ff00;
+ border-radius:8px;
+
+ box-shadow:0 0 20px #00ff0040;
+ animation:terminalFlicker 4s infinite;
+}
+
+.terminal-header{
+ padding:10px 14px;
+ border-bottom:1px solid #00ff00;
+ color:#00ff00;
+ font-weight:bold;
+ cursor:pointer;
+ user-select:none;
+
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+
+ transition:.2s;
+}
+
+/* effet hover */
+.terminal-header:hover{
+ background:rgba(0,255,0,0.08);
+ box-shadow:0 0 10px #00ff0055 inset;
+}
+
+/* flèche */
+.terminal-header::before{
+ content:">";
+ margin-right:8px;
+ color:#00ff88;
+ text-shadow:0 0 8px #00ff00;
+}
+
+/* indicateur état */
+.terminal-header::after{
+ content:"[ CLICK TO OPEN ]";
+ font-size:0.8rem;
+ color:#66ff99;
+ opacity:.8;
+}
+
+/* quand c'est ouvert */
+.terminal[open] .terminal-header::after{
+ content:"[ CLICK TO CLOSE ]";
+ color:#00ff88;
+}
+
+/* petite rotation de la flèche */
+.terminal[open] .terminal-header::before{
+ transform:rotate(90deg);
+}
+
+.terminal-content{
+ padding:12px;
+ font-size:0.9rem;
+ color:#00ff88;
+}
+
+.terminal-content p{
+ margin:4px 0;
+ overflow:hidden;
+ white-space:nowrap;
+ border-right:2px solid #00ff00;
+ width:0;
+ animation:typing 2s steps(40,end) forwards;
+}
+
+.terminal-content p:nth-child(1){animation-delay:0s}
+.terminal-content p:nth-child(2){animation-delay:1s}
+.terminal-content p:nth-child(3){animation-delay:2s}
+.terminal-content p:nth-child(4){animation-delay:3s}
+.terminal-content p:nth-child(5){animation-delay:4s}
+.terminal-content p:nth-child(6){animation-delay:5s}
+.terminal-content p:nth-child(7){animation-delay:6s}
+.terminal-content p:nth-child(8){animation-delay:7s}
+.terminal-content p:nth-child(9){animation-delay:8s}
+.terminal-content p:nth-child(10){animation-delay:9s}
+.terminal-content p:nth-child(11){animation-delay:10s}
+.terminal-content p:nth-child(12){animation-delay:11s}
+.terminal-content p:nth-child(13){animation-delay:12s}
+.terminal-content p:nth-child(14){animation-delay:13s}
+
+.terminal-content p:last-child{
+ border-right:none;
+}
+
+.terminal-content p:last-child::after{
+ content:"_";
+ margin-left:6px;
+ animation:cursorBlink 1s infinite;
+}
+
+
 /* CAMERA VIEW */
 
 .camera-view{
  position:relative;
  margin:auto;
  width:96%;
+ min-height: 700px;
  aspect-ratio:16/9;
 
  border:6px solid #00ff00;
@@ -77,6 +269,7 @@ header h1:hover{
  display:block;
 }
 
+
 /* HUD GRID */
 
 .hud-grid{
@@ -88,7 +281,6 @@ header h1:hover{
  linear-gradient(90deg, rgba(0,255,0,0.05) 1px, transparent 1px);
 
  background-size:60px 60px;
-
  pointer-events:none;
 }
 
@@ -106,16 +298,9 @@ header h1:hover{
  transparent
  );
 
- animation:scan 6s linear infinite;
+ animation: scan 6s linear infinite;
 }
 
-@keyframes scan{
-
-0%{ top:-10px }
-
-100%{ top:100% }
-
-}
 
 /* CAMERA INFO */
 
@@ -128,18 +313,16 @@ header h1:hover{
  gap:14px;
 
  font-size: 1rem;
-
  padding:4px 8px;
-
  background:rgba(0,0,0,0.35);
  border-radius:6px;
-
  color:#00ff88;
 
  text-shadow:
  0 0 5px #00ff00,
  0 0 8px #00ff44;
 }
+
 
 /* TECH PANEL */
 
@@ -160,6 +343,7 @@ header h1:hover{
  color:#88ffaa;
 }
 
+
 /* REC */
 
 .rec{
@@ -177,10 +361,61 @@ header h1:hover{
  animation:recblink 1s infinite;
 }
 
-@keyframes recblink{
-0%,50%,100%{opacity:1}
-25%,75%{opacity:.3}
+
+/* PROJECT INFO */
+
+.project-info{
+ width:80%;
+ margin:20px auto;
+ margin-top: 40px;
+ padding:15px;
+
+ background:rgba(0,255,0,0.06);
+ border:1px solid rgba(0,255,0,0.3);
+ border-radius:12px;
+
+ box-shadow:0 0 20px #00ff0030;
 }
+
+.project-info h2{
+ color:#00ff88;
+ margin-bottom:10px;
+}
+
+.project-info p{
+ line-height:1.6;
+ color:#ccffcc;
+}
+
+
+/* TECH SPECS */
+
+.tech-specs{
+ width:80%;
+ margin:20px auto;
+ margin-bottom: 40px;
+ padding:15px;
+
+ background:rgba(0,255,0,0.05);
+ border-radius:10px;
+ border:1px solid rgba(0,255,0,0.25);
+}
+
+.tech-specs h2{
+ color:#00ff88;
+ margin-bottom:10px;
+}
+
+.tech-specs ul{
+ list-style:none;
+ padding:0;
+}
+
+.tech-specs li{
+ padding:6px 0;
+ border-bottom:1px solid rgba(0,255,0,0.1);
+}
+
 
 /* CROSSHAIR */
 
@@ -190,11 +425,9 @@ header h1:hover{
  position:absolute;
  top:50%;
  left:50%;
-
  transform:translate(-50%,-50%);
 
  font-size:2rem;
-
  color:#00ff00;
 
  text-shadow:
@@ -202,21 +435,16 @@ header h1:hover{
  0 0 20px #00ff44;
 }
 
+
 /* FOOTER */
 
 footer{
  text-align:center;
-
  padding:10px;
-
  background:rgba(0,255,0,0.05);
-
  border-top:1px solid rgba(0,255,0,0.3);
-
  box-shadow:0 0 15px #00ff00aa;
-
  color:#aaffaa;
-
  font-size:0.9rem;
 
  text-shadow:
